@@ -1,0 +1,44 @@
+### Problem & Solution ###
+There are two major obstacles about adaptive thresholding (which I faced this week)
+
+1. 
+
+Q: How should I decrease or increase the threshold properly according to 
+the parameters?(ex. "area", "ratio of edge to area", "gradient")
+
+A: Firstly, I choose to set a standard threshold then use linear scale to decrease or 
+increase the threshold. However, the area vary a lot so the linear scale might overly
+affect the threshold. Therefore, I then use logarithmic scale which perform much better
+than linear scale. 
+
+
+formula related to "area": decrease_delta = log10(min(area(A),area(B))/min_possible_area) * lamda0  (lamda0 = 125)
+formula related to "ratio of edge to area": increase_delta = L/min(area(A)^0.5,area(B)^0.5) * lamda1 (lamda1 = 5)
+formula related to "gradient": increase_delta = 4*1.5^(min(avg_grad(A),avg_grad(B))/10) 
+(min_possible_area = 30)
+
+As for how to determine the constants in the formulas is the second obstacle I encountered
+
+2.
+
+Q: How should I set the constant properly? How should I change the constant according to the #k_mean?
+(since the area might be lower if #k_mean increase or vice versa)
+
+A: Firstly, I use simulation software to help me see how the relationship looks like under different
+constants, and I pick a set of constant for #k_mean = 40.
+(I would choose #k_mean = 40 is because of its low oversegmentation and low running time)
+
+Then I notice that the constant of formula related to "area" might vary under different #k_mean,
+so I also design a proper curve that can adjust the constant of formula related to "area" according
+to different #k_mean
+( curve function: 30 * 0.95^(0.5x - 25) )
+
+### Report ###
+
+we can see that in the file 40means_week14.jpg and 40means_week13, the small regions of the grass 
+are merged into large regions better in week14 image.(less small regions)
+
+Also the edges of the fences in the front part of the images is more clear in week14 image.
+
+Although being improved, the adaptive thresholding method bring more variables to the segmentation and 
+therefore require more testing for better set of these variables.
